@@ -2,6 +2,9 @@ body {
   background-color:#f5ebd6;  
   
 }
+canvas {
+  margin:20vh
+}
 .menu {
   color:#0e0f39;
 }
