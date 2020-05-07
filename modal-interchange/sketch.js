@@ -4,81 +4,102 @@ var DATA = {
   "modes": [
   {
     "name": "Ionian",
-    "intervals": [0, 2, 2, 1, 2, 2, 2, 1]
+    "common_name": "Major",
+    "alt_name": "Tonic",
+    "degree": "I",
+    "intervals": [2, 2, 1, 2, 2, 2, 1]
   },
   {
     "name": "Dorian",
-    "intervals": [0, 2, 1, 2, 2, 2, 1, 2]
+    "common_name": "Harmonic Minor",
+    "alt_name": "Supertonic",
+    "degree": "II",
+    "intervals": [2, 1, 2, 2, 2, 1, 2]
   },{
     "name": "Phrygian",
-    "intervals": [0, 1, 2, 2, 2, 1, 2, 2]
+    "common_name": "",
+    "alt_name": "Mediant",
+    "degree": "III",
+    "intervals": [1, 2, 2, 2, 1, 2, 2]
   },{
     "name": "Lydian",
-    "intervals": [ 0, 2, 2, 2, 1, 2, 2, 1]
+    "common_name": "",
+    "alt_name": "Subdominant",
+    "degree": "IV",
+    "intervals": [2, 2, 2, 1, 2, 2, 1]
   },{
     "name": "Mixolydian",
-    "intervals": [0, 2, 2, 1, 2, 2, 1, 2]
+    "common_name": "Dominant",
+    "alt_name": "Dominant",
+    "degree": "V",
+    "intervals": [2, 2, 1, 2, 2, 1, 2]
   },{
     "name": "Aeolian",
-    "intervals":  [0, 2, 1, 2, 2, 1, 2, 2]
+    "common_name": "Natural Minor",
+    "alt_name": "Submediant",
+    "degree": "VI",
+    "intervals":  [2, 1, 2, 2, 1, 2, 2]
   },{
     "name": "Locrian",
-    "intervals": [0, 1, 2, 2, 1, 2, 2, 2]
+    "common_name": "",
+    "alt_name": "Leading Tone",
+    "degree": "VII",
+    "intervals": [1, 2, 2, 1, 2, 2, 2]
   }]
 };
 /*
- I W–W–H–W–W–W–H	C–D–E–F–G–A–B–C
-	II	W–H–W–W–W–H–W	D–E–F–G–A–B–C–D
- III	H–W–W–W–H–W–W	E–F–G–A–B–C–D–E
- IV	W–W–W–H–W–W–H	F–G–A–B–C–D–E–F
- V	  W–W–H–W–W–H–W	G–A–B–C–D–E–F–
- VI	W–H–W–W–H–W–W	A–B–C–D–E–F–G–A
- VII	H–W–W–H–W–W–W	B–C–D–E–F–G–A–B
+I W–W–H–W–W–W–H	C–D–E–F–G–A–B–C
+II	W–H–W–W–W–H–W	D–E–F–G–A–B–C–D
+III	H–W–W–W–H–W–W	E–F–G–A–B–C–D–E
+IV	W–W–W–H–W–W–H	F–G–A–B–C–D–E–F
+V	  W–W–H–W–W–H–W	G–A–B–C–D–E–F–
+VI	W–H–W–W–H–W–W	A–B–C–D–E–F–G–A
+VII	H–W–W–H–W–W–W	B–C–D–E–F–G–A–B
  */
 
-var notes = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B', 'C'];
+var notes = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B', 'C'];
+
 function preload() {
   ibm = loadFont('../assets/IBMPlexMono-Regular.woff');
 }
 
 function setup() {
   createCanvas(windowWidth, 500);
-  text(DATA.modes[3].name, 10,10);
-  scale = buildScale(DATA.modes[3].intervals);
-  drawPitchNodes(scale);
 }
 
+/**
+ * 
+ */
 function playScale(scale, startingValue){
-  let midiVal = startingValue;
-  for(let i = 0; i < scale.length; i++){
-    console.log('got here');
-    if(scale[i] == 1){
-      generateTone(midiVal+=i)
-
-    }
-    i++;
-  }
-}
-
-function generateTone(midiVal) {
-  toneFilter = new p5.LowPass();
+  var midiVal = startingValue;
+  var toneFilter = new p5.LowPass();
   toneFilter.freq(700);
-  toneOscillator = new p5.Oscillator();
+  var toneOscillator = new p5.Oscillator();
   toneOscillator.setType('square');
   toneOscillator.disconnect();
   toneOscillator.connect(toneFilter);
-  toneOscillator.freq(midiToFreq(midiVal));
   toneOscillator.amp(0.2);
-  toneOscillator.start();
-  toneo
+  var i = 0;
 
-  toneOscillator.stop();
+  var intID = setInterval(function() {
+      toneOscillator.freq(midiToFreq(midiVal));
+      console.log(midiVal);
+      midiVal+=DATA.modes[scale].intervals[i];
+      toneOscillator.start();;
+      if(i < 8){
+        i++;
+      }
+      else { 
+        clearInterval(intID);
+        toneOscillator.stop();
+      }
+   }, 200); 
+
 }
 
-function keyReleased() {
-	if (key === ' '){
-    playScale(scale, 60);
-	}
+function generateTone(midiVal) {
+ 
+  // setTimeout(generateTone, 1000);
 }
 
 function draw () {
@@ -89,6 +110,7 @@ function buildScale(mode){
   var scale = new Array();
   var twelveToneScale = [0,0,0,0,0,0,0,0,0,0,0];
   for(var i = 0; i < mode.length; i++){
+    twelveToneScale[0] = 1;
     twelveToneScale[keyStart+=mode[i]] = 1;
   }
   return twelveToneScale;
@@ -101,7 +123,7 @@ function drawPitchNodes(scaleOfMode){
   for(let i = 0; i < 13; i++){
  
     if(scaleOfMode[i] == 1){
-      fill(44,0,80);
+      fill(13, 15, 57);
     }
     else{
       fill(200, 200,200);
@@ -113,4 +135,21 @@ function drawPitchNodes(scaleOfMode){
     textFont("ibm");
     text(notes[i], 45+circleDist,55)
   }
+}
+function keyReleased() {
+	if (key === '1'){  
+    var mode = DATA.modes[0];
+    textFont("ibm");
+    let textData = mode.degree + " " + mode.name + (mode.common_name ? (" (" + mode.common_name + ")") : ""); 
+    text(textData, 10, 10);
+    playScale(0, 60);
+    drawPitchNodes(buildScale(mode.intervals));
+	} else if (key === '2'){  
+    var mode = DATA.modes[1];
+    textFont("ibm");
+    let textData = mode.degree + " " + mode.name + (mode.common_name ? (" (" + mode.common_name + ")") : ""); 
+    text(textData, 10, 10);
+    playScale(1, 62);
+    drawPitchNodes(buildScale(mode.intervals));
+	}
 }
