@@ -3,7 +3,8 @@ body {
   
 }
 canvas {
-  margin:20vh
+  margin-top:30vh;
+  margin-left:10vh;
 }
 .menu {
   color:#0e0f39;
