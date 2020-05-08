@@ -1,5 +1,3 @@
-
-
 var DATA = {
   "modes": [
   {
@@ -59,6 +57,7 @@ VII	H–W–W–H–W–W–W	B–C–D–E–F–G–A–B
 var toneOscillator;
 var notePlaying;
 var selectedMode = 1;
+var intervalID;
 var w, h;
 
 var notes = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B', 'C'];
@@ -72,13 +71,14 @@ function setup() {
   h = windowHeight;
   createCanvas(w, h-300);
   toneOscillator = initializeOsc();
-  text("select modes with keys 1-7, press SPACE to play", 300, 200);
 
 }
 
 function draw () {    
   clear();
   drawPitchNodes(buildScale(DATA.modes[selectedMode-1]));
+  fill(20,20,20);
+  text("select modes with keys 1-7, press SPACE to play", 300, 200);
 }
 
 function playScale(scale, startingValue){
@@ -86,7 +86,7 @@ function playScale(scale, startingValue){
   var i = 0;  
   console.log(notePlaying);
   console.log('got here')
-  var intID = setInterval(function() {
+  intervalID = setInterval(function() {
       let note = DATA.modes[scale].intervals;
       // console.log(DATA.modes[scale].name);
 
@@ -104,7 +104,7 @@ function playScale(scale, startingValue){
         i++;
       }
       else { 
-        clearInterval(intID);
+        clearInterval(intervalID);
         toneOscillator.stop();
       }
    }, 400); 
@@ -151,7 +151,7 @@ function drawPitchNodes(scaleOfMode){
   for(let i = 0; i < 13; i++){
     if(scaleOfMode[i] == 1){
       if(notePlaying == i){
-        fill(255,0,0);
+        fill(243, 140, 46);
       } else {
         fill(13, 15, 57);
       }
@@ -172,6 +172,9 @@ function drawPitchNodes(scaleOfMode){
 /* Creates a scale composed of @pitchNodes */
 
 function keyTyped() {
+  clearInterval(intervalID);
+  notePlaying = null;
+  toneOscillator.stop();
   if(key > 0 && key <= 7){
     selectedMode = key;
     clear();
