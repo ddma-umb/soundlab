@@ -56,6 +56,7 @@ V	  W–W–H–W–W–H–W	G–A–B–C–D–E–F–
 VI	W–H–W–W–H–W–W	A–B–C–D–E–F–G–A
 VII	H–W–W–H–W–W–W	B–C–D–E–F–G–A–B
  */
+var toneOscillator;
 
 var notes = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B', 'C'];
 
@@ -64,25 +65,22 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(windowWidth, 500);
+  createCanvas(windowWidth, 700);
+  toneOscillator = initializeOsc();
+
 }
+
+
 
 /**
  * 
  */
 function playScale(scale, startingValue){
   var midiVal = startingValue;
-  var toneFilter = new p5.LowPass();
-  toneFilter.freq(700);
-  var toneOscillator = new p5.Oscillator();
-  toneOscillator.setType('square');
-  toneOscillator.disconnect();
-  toneOscillator.connect(toneFilter);
-  toneOscillator.amp(0.2);
   var i = 0;
 
   var intID = setInterval(function() {
-      toneOscillator.freq(midiToFreq(midiVal));
+      generateTone(midiVal);
       console.log(midiVal);
       midiVal+=DATA.modes[scale].intervals[i];
       toneOscillator.start();;
@@ -96,13 +94,25 @@ function playScale(scale, startingValue){
    }, 200); 
 
 }
-
+function initializeOsc(){
+  var toneFilter = new p5.LowPass();
+  toneOscillator = new p5.Oscillator(); 
+  toneFilter.freq(700);
+  toneOscillator.setType('square');
+  toneOscillator.disconnect();
+  toneOscillator.connect(toneFilter);
+  toneOscillator.amp(0.1);
+  return toneOscillator;  
+}
 function generateTone(midiVal) {
- 
+  let freq = midiToFreq(midiVal);
+  console.log(freq);
+  toneOscillator.freq(freq);
   // setTimeout(generateTone, 1000);
 }
 
 function draw () {
+  
 }
 
 function buildScale(mode){
@@ -133,23 +143,22 @@ function drawPitchNodes(scaleOfMode){
     // console.log(at)
     fill(255,255,255);
     textFont("ibm");
-    text(notes[i], 45+circleDist,55)
+    text(notes[i], 40+circleDist,55)
   }
 }
-function keyReleased() {
-	if (key === '1'){  
-    var mode = DATA.modes[0];
+
+/* Creates a scale composed of @pitchNodes */
+
+function keyTyped() {
+  if(key > 0 && key <= 7){
+    clear();
+    var mode = DATA.modes[key-1];
+    fill(0,0,0);
+    textSize(18);
     textFont("ibm");
     let textData = mode.degree + " " + mode.name + (mode.common_name ? (" (" + mode.common_name + ")") : ""); 
-    text(textData, 10, 10);
-    playScale(0, 60);
+    text(textData, 10, 120);
+    playScale(key-1, 60);
     drawPitchNodes(buildScale(mode.intervals));
-	} else if (key === '2'){  
-    var mode = DATA.modes[1];
-    textFont("ibm");
-    let textData = mode.degree + " " + mode.name + (mode.common_name ? (" (" + mode.common_name + ")") : ""); 
-    text(textData, 10, 10);
-    playScale(1, 62);
-    drawPitchNodes(buildScale(mode.intervals));
-	}
+  }
 }
