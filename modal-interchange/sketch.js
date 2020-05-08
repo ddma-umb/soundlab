@@ -59,6 +59,10 @@ VII	H–W–W–H–W–W–W	B–C–D–E–F–G–A–B
 var toneOscillator;
 var notePlaying;
 var selectedMode = 1;
+<<<<<<< HEAD
+=======
+var w, h;
+>>>>>>> smooth-shapes
 
 var notes = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B', 'C'];
 
@@ -67,12 +71,18 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(windowWidth, 700);
+  w = windowWidth;
+  h = windowHeight;
+  createCanvas(w, h-300);
   toneOscillator = initializeOsc();
   text("select modes with keys 1-7, press SPACE to play", 300, 200);
 
 }
 
+function draw () {    
+  clear();
+  drawPitchNodes(buildScale(DATA.modes[selectedMode-1]));
+}
 
 function playScale(scale, startingValue){
   var midiVal = startingValue;
@@ -83,8 +93,14 @@ function playScale(scale, startingValue){
       let note = DATA.modes[scale].intervals;
       // console.log(DATA.modes[scale].name);
 
+<<<<<<< HEAD
       if(i>0) 
         notePlaying+=note[i-1] 
+=======
+    
+      if(i>0) 
+      notePlaying+=note[i-1] 
+>>>>>>> smooth-shapes
       else 
         notePlaying = 0;
       generateTone(midiVal);
@@ -119,9 +135,12 @@ function generateTone(midiVal) {
   // setTimeout(generateTone, 1000);
 }
 
+<<<<<<< HEAD
 function draw () {
   drawPitchNodes(buildScale(DATA.modes[selectedMode-1]));
 }
+=======
+>>>>>>> smooth-shapes
 
 function buildScale(mode){
   var keyStart = 0;
@@ -154,7 +173,11 @@ function drawPitchNodes(scaleOfMode){
     else{
       fill(200, 200,200);
     }
+<<<<<<< HEAD
     let circleDist = i*(windowWidth/15);
+=======
+    let circleDist = i*(windowWidth/13.5);
+>>>>>>> smooth-shapes
    
     ellipse(50+circleDist,50,50,50);
     // console.log(at)
