@@ -57,6 +57,8 @@ VI	W–H–W–W–H–W–W	A–B–C–D–E–F–G–A
 VII	H–W–W–H–W–W–W	B–C–D–E–F–G–A–B
  */
 var toneOscillator;
+var notePlaying;
+var selectedMode = 1;
 
 var notes = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B', 'C'];
 
@@ -67,23 +69,29 @@ function preload() {
 function setup() {
   createCanvas(windowWidth, 700);
   toneOscillator = initializeOsc();
+  text("select modes with keys 1-7, press SPACE to play", 300, 200);
 
 }
 
 
-
-/**
- * 
- */
 function playScale(scale, startingValue){
   var midiVal = startingValue;
-  var i = 0;
-
+  var i = 0;  
+  console.log(notePlaying);
+  console.log('got here')
   var intID = setInterval(function() {
+      let note = DATA.modes[scale].intervals;
+      // console.log(DATA.modes[scale].name);
+
+      if(i>0) 
+        notePlaying+=note[i-1] 
+      else 
+        notePlaying = 0;
       generateTone(midiVal);
-      console.log(midiVal);
-      midiVal+=DATA.modes[scale].intervals[i];
+      midiVal+=note[i];  
       toneOscillator.start();;
+      console.log(notePlaying);  console.log(midiVal-60);
+
       if(i < 8){
         i++;
       }
@@ -91,7 +99,7 @@ function playScale(scale, startingValue){
         clearInterval(intID);
         toneOscillator.stop();
       }
-   }, 200); 
+   }, 400); 
 
 }
 function initializeOsc(){
@@ -106,39 +114,48 @@ function initializeOsc(){
 }
 function generateTone(midiVal) {
   let freq = midiToFreq(midiVal);
-  console.log(freq);
+  // console.log(freq);
   toneOscillator.freq(freq);
   // setTimeout(generateTone, 1000);
 }
 
 function draw () {
-  
+  drawPitchNodes(buildScale(DATA.modes[selectedMode-1]));
 }
 
 function buildScale(mode){
   var keyStart = 0;
-  var scale = new Array();
   var twelveToneScale = [0,0,0,0,0,0,0,0,0,0,0];
-  for(var i = 0; i < mode.length; i++){
+  for(var i = 0; i < mode.intervals.length; i++){
     twelveToneScale[0] = 1;
-    twelveToneScale[keyStart+=mode[i]] = 1;
+    twelveToneScale[keyStart+=mode.intervals[i]] = 1;
   }
   return twelveToneScale;
 }
 
 function drawPitchNodes(scaleOfMode){  
-  console.log("drawing pitch nodes...");
+  // console.log("redrawing drawing pitch nodes...");
+  textSize(18);
+  textFont("ibm");
   noStroke();
-  var currentNoteVal = 0;
+
+  var mode = DATA.modes[selectedMode-1];
+  fill(0,0,0);
+  let textData = mode.degree + " " + mode.name + (mode.common_name ? (" (" + mode.common_name + ")") : ""); 
+  text(textData, 10, 120);
   for(let i = 0; i < 13; i++){
- 
     if(scaleOfMode[i] == 1){
-      fill(13, 15, 57);
+      if(notePlaying == i){
+        fill(255,0,0);
+      } else {
+        fill(13, 15, 57);
+      }
     }
     else{
       fill(200, 200,200);
     }
     let circleDist = i*(windowWidth/15);
+   
     ellipse(50+circleDist,50,50,50);
     // console.log(at)
     fill(255,255,255);
@@ -151,14 +168,10 @@ function drawPitchNodes(scaleOfMode){
 
 function keyTyped() {
   if(key > 0 && key <= 7){
+    selectedMode = key;
     clear();
-    var mode = DATA.modes[key-1];
-    fill(0,0,0);
-    textSize(18);
-    textFont("ibm");
-    let textData = mode.degree + " " + mode.name + (mode.common_name ? (" (" + mode.common_name + ")") : ""); 
-    text(textData, 10, 120);
-    playScale(key-1, 60);
-    drawPitchNodes(buildScale(mode.intervals));
+  }
+  if(key == ' '){
+    playScale(selectedMode-1, 60);
   }
 }
