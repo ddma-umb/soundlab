@@ -3,8 +3,10 @@ body {
   
 }
 canvas {
-  margin-top:30vh;
-  margin-left:10vh;
+  /* margin-top:30vh; */
+  /* margin-left:10vh; */
+  margin:0px;
+  margin-top:300px;
 }
 .menu {
   color:#0e0f39;
