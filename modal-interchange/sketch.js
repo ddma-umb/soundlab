@@ -78,7 +78,7 @@ function draw () {
   clear();
   drawPitchNodes(buildScale(DATA.modes[selectedMode-1]));
   fill(20,20,20);
-  text("select modes with keys 1-7, press SPACE to play", 300, 200);
+  text("select modes with keys 1-7, press SPACE to play", w/4, 200);
 }
 
 function playScale(scale, startingValue){
@@ -146,8 +146,8 @@ function drawPitchNodes(scaleOfMode){
 
   var mode = DATA.modes[selectedMode-1];
   fill(0,0,0);
-  let textData = mode.degree + " " + mode.name + (mode.common_name ? (" (" + mode.common_name + ")") : ""); 
-  text(textData, 10, 120);
+  let textData =  mode.degree + " " + mode.name + (mode.common_name ? (" (" + mode.common_name + ")") : ""); 
+  text(textData, w/2.2, 140);
   for(let i = 0; i < 13; i++){
     if(scaleOfMode[i] == 1){
       if(notePlaying == i){
