@@ -1,8 +1,14 @@
+html {
 
+  cursor: url(assets/cursor1.png), auto;
+}
 body {
 	margin: 0;
 	padding: 0;
-	background-color:#f38c2e;  
+  background-color:#f38c2e;  
+}
+a {
+  cursor: url(assets/cursor2.png), auto;
 }
 .menu {
   font-family: "ibm";

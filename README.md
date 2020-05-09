@@ -1,5 +1,5 @@
 # DDMA Soundlab
-[soundlab-logo](assets/soundlab-logo.png)
+![soundlab-logo](assets/soundlab-logo.png)
 ## [ddma-umb.github.io/soundlab](https://ddma-umb.github.io/soundlab)
 
 ## A place for audio visualization experiments
