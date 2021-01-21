@@ -1,11 +1,11 @@
-var mic;
+/*var mic;
 var toneOscillator;
 
 function setup(){
     toneOscillator = initializeOsc();
     mic = new p5.AudioIn();
     mic.start();
-    generateTone(60);
+    generateTone(1000);
 }
 
 function draw(){
@@ -35,3 +35,42 @@ function initializeOsc(){
     // setTimeout(generateTone, 1000);
   }
   
+*/
+  let osc, playing, freq, amp;
+  let mic;
+
+function setup() {
+  let cnv = createCanvas(100, 100);
+  mic = new p5.AudioIn();  
+  
+  let fft = new p5.FFT();
+  fft.setInput(mic);
+  
+  mic.start();
+  cnv.mousePressed(playOscillator);
+  osc = new p5.Oscillator('sine');
+}
+
+function draw() {
+  
+  let inputLevel = mic.getLevel();
+
+  freq = constrain(map(inputLevel, 0, .3, 100, 500), 100, 500);
+  amp = constrain(map(inputLevel, 0, .3, 0, 1), 0, 1);
+
+  amp = .2;
+  // fft.analyze(16);
+  
+  // text('start vocoder', 20, 20);
+
+  osc.freq(freq);
+  osc.amp(amp);
+  
+  osc.start();
+}
+
+function playOscillator() {
+
+  osc.start();
+  playing = true;
+}
